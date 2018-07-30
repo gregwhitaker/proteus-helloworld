@@ -1,0 +1,67 @@
+plugins {
+    id 'com.google.protobuf' version '0.8.3'
+    id 'maven-publish'
+}
+
+apply from: file("${rootProject.projectDir}/gradle/java.gradle")
+
+// Dependency Management
+dependencies {
+    compile "io.netifi.proteus:core:${proteusVersion}"
+    compile "com.google.protobuf:protobuf-java:${protobufVersion}"
+}
+
+// Protocol Buffers
+protobuf {
+    generatedFilesBaseDir = "${projectDir}/src/generated"
+
+    protoc {
+        artifact = "com.google.protobuf:protoc:${protobufVersion}"
+    }
+
+    plugins {
+        proteus {
+            artifact = "io.netifi.proteus:protobuf-rpc:${proteusVersion}"
+        }
+        generateProtoTasks {
+            ofSourceSet('main')*.plugins {
+                proteus {}
+            }
+        }
+    }
+}
+
+idea {
+    module {
+        sourceDirs += file("src/generated/main/java")
+        sourceDirs += file("src/generated/main/proteus")
+
+        generatedSourceDirs += file('src/generated/main/java')
+        generatedSourceDirs += file('src/generated/main/proteus')
+    }
+}
+
+clean {
+    delete 'src/generated/main'
+}
+
+// Artifact Publishing
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+
+    repositories {
+        maven {
+            url = version.endsWith('SNAPSHOT') ? 'https://artifactory.netifiinc.com/artifactory/libs-snapshot-local' : 'https://artifactory.netifiinc.com/artifactory/libs-release-local'
+            credentials {
+                username = "$netifiArtifactoryUsername"
+                password = "$netifiArtifactoryPassword"
+            }
+        }
+    }
+}

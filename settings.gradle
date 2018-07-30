@@ -1,0 +1,3 @@
+rootProject.name = 'proteus-helloworld'
+include 'helloworld-service'
+include 'helloworld-idl'

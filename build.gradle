@@ -1,0 +1,53 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'io.github.robwin:jgitflow-gradle-plugin:0.6.0'
+    }
+}
+
+plugins {
+    id 'com.gradle.build-scan' version '1.15.1'
+    id 'com.github.hierynomus.license' version '0.14.0'
+    id 'net.saliman.properties' version '1.4.6'
+}
+
+buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+    publishOnFailure()
+}
+
+allprojects {
+    apply plugin: 'io.github.robwin.jgitflow'
+    apply plugin: 'com.github.hierynomus.license'
+    apply plugin: 'idea'
+    apply plugin: 'net.saliman.properties'
+
+    ext {
+        protobufVersion = '3.6.0'
+        proteusVersion = '0.8.5'
+        proteusSpringVersion = '0.3.2'
+        springbomVersion = 'Cairo-SR1'
+    }
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven {
+            url = 'https://artifactory.netifiinc.com/artifactory/libs-release'
+            credentials {
+                username = "$netifiArtifactoryUsername"
+                password = "$netifiArtifactoryPassword"
+            }
+        }
+    }
+
+    license {
+        header rootProject.file('codequality/HEADER')
+        strictCheck true
+    }
+}

@@ -1,0 +1,25 @@
+language: java
+sudo: required
+jdk:
+- oraclejdk8
+install: true
+before_install:
+- sudo add-apt-repository ppa:maarten-fonville/protobuf -y
+- sudo apt-get update -y
+- sudo apt-get install libprotobuf-dev libprotoc-dev protobuf-compiler -y
+- pip install --user awscli
+- mkdir -p ~/$TRAVIS_BUILD_NUMBER
+- aws s3 sync s3://travis-build-stages-shared-storage-test/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+script:
+- "buildtravis.sh"
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.m2"
+env:
+  global:
+  - secure: rBuaM7keo9VH7JB4F05UjOqAh2/SfktHLRYDFr3ZcNirRlbBaEJAyqmRznfqOSxlVlcQ3y6eqhhjpZMZfKJSteUpyOeKjWPtNLATQgrajemjFzVIMYXC+hQItwH4aBuq+POaaMFulrM92sOh79GtP9dSAZoayUXw2fSlsD0nLwgsPIWdxUIBKj4eWEGJlBsGbWh4x/ncx4DTj657HZhcrSrwnqRxnfagvabWFaE6/lmlrBvQGS5oOdx7bxGlvZg8FLBbzWUbGI2gUsqlHAwyMATDCgIy3INCDm0BLcr49ooKw/7NcLyFiM+XZ6sPl+16yJnh4q20dNL8j+aqyoqG2+v4+UniL2SUKp9rc2cdX0oT4oOJBuSksUNt/82FFlAC9Uk8hgSX2NOyyEIIkKlkuAf9nft8dNEdkIewa2M3RccORn7loHMMCk4XlGN9cSszCVw29+koFKaGJuAoRC4snP77EeI6HvGJZKAyND+lm1c4QA2ddpqDYFJ1ILrUd6ry6fmUlW8A1XxbPnqLn7iB8ULbYdBf5Zfgv7bgypQwgB8qqix56Q0I8XpH33+6R0OH57OMCyJNtdXfBdZFvPXDilZ4l3Q6ABFyIYr/dALr5Cqf2frftf1Wv+rjyH3znjiLIPlqWh2q/WMkbRJtE0/ZpxCJP0fTmdnUSabm6n/K+aA=
+  - secure: X9cXOm37Ntwn+Bk8DQC25Fqls/Cq7hCSTlrRvD4Q5+goL2MAZEVzMdGIbuDfNPJZDxg8pJDpv5KDEadILKSj0sCSnr7EB7f3P86JsuxlVMKNUT2F19QYalPrLngzpsuNhPTLeYNWVzTbyXZCN7zJpBpGP0Vc1GPPACrhC6rh3G7rFCghfTO/rEKS6UnVl2//0A45uHXAMgm6G8EV3b+08Mh7NZwcKZYVEvujAE85mVWrfddA/+G79wHAaToRk2ZQFtWtshgceyW8uZa5GIXQDDQHoM5g3/e/BW921vvYIypU5kWoMpFNUgNB92SazH/OSlxOjX20T/jqAeAM+C6SwVoG8wvCcT5gSPnVHpIiO7v6tTEIJnRLuy42vz51OOjCxurVtQ6z5Diw8jiBwh69Ioj7ynpsv3fxZC37So+5M2ahUkGlJ8wbCPecRb3pb73PAh4wSD+xXa9UTDjnWHwejF5CSozT13915c89a096W0ZDai86O9Xus9yGXEPq13tgwb+wTzfzd2H0Qj45vKdGNUkIduiD9O/9TJLKwrfhNm6d6oP3wAy/UnoJ9b4OpCCiB+3cR4VLHj/JkruV3kgBGuIJ5fTe4mR0yiuas/jNNob+/Lz1/hjLOFiMrOkTNpkp2CF9OkiVg9WmDvemsg7z3xUSN/uXSwevul5j9I6S4BI=
